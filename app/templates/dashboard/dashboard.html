@@ -1,0 +1,26 @@
+{% extends "dashboard/layout.html" %}
+{% load static %}
+
+{% block head %}
+<title>Dashboard</title>
+{% endblock head %}
+
+{% block content %}
+<main class="container">
+    <div class="control-panel">
+        <h1 class="control-title">Painel de Controle</h1>
+        
+        <div class="control-buttons">
+            <a href="/dress/" class="btn led-btn control-btn text-white">
+                <i class="bi bi-lightbulb btn-icon"></i>
+                Vestido LED
+            </a>
+            
+            <a href="/detonador/" class="btn detonator-btn control-btn text-white">
+                <i class="bi bi-megaphone btn-icon"></i>
+                Detonador
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock content %}
