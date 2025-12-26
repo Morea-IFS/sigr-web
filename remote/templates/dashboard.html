@@ -1,0 +1,79 @@
+{% extends "dashboard/layout.html" %}
+
+{% block head %}
+<title>Controles IR</title>
+{% endblock head %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Meus Controles</h2>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newRemoteModal">
+            <i class="bi bi-plus-lg"></i> Novo Controle
+        </button>
+    </div>
+
+    <div class="row">
+        {% for remote in remotes %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        {% if remote.type == 'AC' %}<i class="bi bi-wind"></i>
+                        {% elif remote.type == 'TV' %}<i class="bi bi-tv"></i>
+                        {% else %}<i class="bi bi-controller"></i>{% endif %}
+                        {{ remote.name }}
+                    </h5>
+                    <p class="text-muted small">{{ remote.device.name }}</p>
+                    <a href="{% url 'ir_interface' remote.id %}" class="btn btn-outline-primary w-100">
+                        Abrir Controle
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">
+            <p>Nenhum controle criado ainda.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="newRemoteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" class="modal-content">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title">Novo Controle Remoto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nome</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dispositivo ESP</label>
+                    <select name="device_id" class="form-select">
+                        {% for dev in devices %}
+                        <option value="{{ dev.id }}">{{ dev.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tipo</label>
+                    <select name="type" class="form-select">
+                        {% for val, label in types %}
+                        <option value="{{ val }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

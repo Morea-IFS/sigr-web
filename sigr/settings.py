@@ -6,7 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "chave-padrao-insegura")
+SECRET_KEY = os.getenv("SECRET_KEY",)
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
 
 HOST = os.getenv("HOST", "*")
@@ -23,9 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'pwa',
     'app',
     'dress',
     'detonador',
+    'remote',
 ]
 
 MIDDLEWARE = [
@@ -144,13 +146,51 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
+        "app": "fas fa-cogs",
         "dress": "fas fa-tshirt",
         "detonador": "fas fa-bolt",
+        "remote": "fas fa-tv-alt", 
         "dress.Dress": "fas fa-lightbulb",
         "dress.Device": "fas fa-microchip",
+        "remote.Remote": "fas fa-gamepad",
         "detonador.Evento": "fas fa-calendar-alt",
         "detonador.Device": "fas fa-cpu",
     },
     "changeform_format": "horizontal_tabs",
-    "order_with_respect_to": ["dress", "detonador"],
+    "order_with_respect_to": ["dress", "detonador", "remote", "app"],
 }
+
+PWA_APP_NAME = 'SIGR App'
+PWA_APP_DESCRIPTION = "Sistema Integrado SIGR"
+PWA_APP_THEME_COLOR = "#21B0E9"
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/icon-160x160.png',
+        'sizes': '160x160'
+    },
+    {
+        'src': '/static/images/icon-512x512.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/icon-160x160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/images/icon-512x512.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'pt-BR'
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static', 'js', 'serviceworker.js')

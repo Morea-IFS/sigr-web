@@ -1,0 +1,12 @@
+.env
+/venv
+db.sqlite3
+/app/__pycache__
+/app/migrations
+/detonador/__pycache__
+/detonador/migrations
+/dress/__pycache__
+/dress/migrations
+/sigr/__pycache__
+/remote/__pycache__
+/remote/migrations

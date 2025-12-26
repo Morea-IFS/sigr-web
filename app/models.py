@@ -1,13 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
-
 class DeviceApplication(models.IntegerChoices):
     none = 0, 'Not Defined',
     dress = 1, 'Vestido',
     detonator = 2, 'Detonador',
     displays = 3, 'Displays'
+    ir_remote = 4, 'Controle IR'
     
 class AuthTypes(models.IntegerChoices):
     pending = 0, 'Pending',

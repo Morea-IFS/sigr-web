@@ -11,12 +11,16 @@
     --light: #f8fafc;
     --dark: #1e293b;
     --gray: #64748b;
+    --remote: #06b6d4;
     
     /* Gradientes */
     --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-light));
     --gradient-success: linear-gradient(135deg, var(--success), #34d399);
     --gradient-warning: linear-gradient(135deg, var(--warning), #fbbf24);
     --gradient-danger: linear-gradient(135deg, var(--danger), #f87171);
+    --gradient-remote: linear-gradient(135deg, var(--remote), #0891b2);
+    --gradient-led: linear-gradient(135deg, #4361ee, #3f37c9);
+    --gradient-detonator: linear-gradient(135deg, #f72585, #b5179e);
     
     /* Sombras */
     --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -35,6 +39,7 @@ body {
     color: var(--dark);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
 /* ===== LAYOUT E CONTAINERS ===== */
@@ -249,12 +254,17 @@ body {
 }
 
 .led-btn {
-    background: linear-gradient(135deg, #4361ee, #3f37c9);
+    background: var(--gradient-led);
     color: white;
 }
 
 .detonator-btn {
-    background: linear-gradient(135deg, #f72585, #b5179e);
+    background: var(--gradient-detonator);
+    color: white;
+}
+
+.remote-btn {
+    background: var(--gradient-remote);
     color: white;
 }
 
@@ -535,7 +545,7 @@ body {
     border: 0 !important;
 }
 
-/* ===== DISPOSITIVOS E PINS ===== */
+
 .device-checkbox {
     display: none;
 }
@@ -635,7 +645,6 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* ===== ESTADOS VAZIOS ===== */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -649,7 +658,6 @@ body {
     color: var(--primary);
 }
 
-/* ===== ALERTAS ===== */
 .alert {
     padding: 1rem 1.5rem;
     border-radius: 8px;
@@ -693,7 +701,7 @@ body {
     opacity: 0.75;
 }
 
-/* ===== CONTROLE DE LED ===== */
+
 .gradient-bg {
     background: linear-gradient(135deg, #4361ee, #3f37c9);
 }
@@ -810,7 +818,6 @@ body {
     cursor: pointer;
 }
 
-/* ===== LAYOUT ESPECÍFICO ===== */
 .control-panel {
     display: flex;
     flex-direction: column;
@@ -825,7 +832,6 @@ body {
     margin-bottom: 2rem;
 }
 
-/* ===== NAVBAR ===== */
 .navbar {
     background-color: white !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
