@@ -39,7 +39,27 @@ def trigger_signal(request, btn_id):
     ip = button.remote.device.ip_address 
     if not ip: return JsonResponse({'status': 'error', 'msg': 'Offline'})
     
-    payload = {'protocol': button.protocol, 'value': button.code_value, 'bits': button.bits}
+    payload = {
+    'protocol': button.protocol,
+    'type': button.data_type,
+    }
+
+    if button.data_type == 'simple':
+        payload.update({
+            'value': button.code_value,
+            'bits': button.bits
+        })
+
+    elif button.data_type == 'raw':
+        payload.update({
+            'raw': button.raw_data,
+            'khz': 38
+        })
+
+    elif button.data_type == 'state':
+        payload.update({
+            'state': button.state_data
+        })
     
     try:
         requests.post(f"http://{ip}/emit", json=payload, timeout=2)
@@ -93,14 +113,40 @@ def save_learned_button(request):
                 key_name=key_name,
                 icon=icon_class,
                 protocol=data.get('protocol', 'UNKNOWN'),
+
                 code_value=str(data.get('value', '0')),
-                bits=data.get('bits', 0)
+                bits=data.get('bits', 0),
+                data_type=data.get('type', 'simple'),
+                raw_data=data.get('raw'),
+                state_data=data.get('state'),
             )
             
             return JsonResponse({'status': 'saved', 'id': new_btn.id})
             
         except Exception as e:
             print(f"ERRO: {str(e)}")
+            return JsonResponse({'error': str(e)}, status=500)
+            
+    return JsonResponse({'status': 'method_not_allowed'}, status=405)
+
+@csrf_exempt
+@login_required
+def update_ac_state(request, remote_id):
+    if request.method == 'POST':
+        try:
+            body_unicode = request.body.decode('utf-8')
+            data = json.loads(body_unicode)
+            
+            remote = get_object_or_404(Remote, id=remote_id)
+            if 'is_on' in data:
+                remote.ac_state_on = data['is_on']
+            if 'temp' in data:
+                remote.ac_current_temp = data['temp']
+                
+            remote.save()
+            return JsonResponse({'status': 'success'})
+            
+        except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
             
     return JsonResponse({'status': 'method_not_allowed'}, status=405)

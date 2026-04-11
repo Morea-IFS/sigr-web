@@ -22,51 +22,33 @@
 
     <div class="remote-body">
         {% if remote.type == 'AC' %}
-        <div class="ac-layout">
-            <div class="ac-top-row">
-                <button onclick="interact('power', 'Power')" 
-                        class="btn btn-round {% if 'power' in button_map %}registered power{% endif %}">
-                    <i class="bi bi-power"></i>
-                </button>
-                
-                <button onclick="interact('mode', 'Modo')" 
-                        class="btn btn-round {% if 'mode' in button_map %}registered{% endif %}">
-                    <i class="bi bi-snow2"></i>
-                </button>
-                
-                <button onclick="interact('fan', 'Ventilador')" 
-                        class="btn btn-round {% if 'fan' in button_map %}registered{% endif %}">
-                    <i class="bi bi-fan"></i>
-                </button>
+        <div class="ac-smart-layout">
+            <div class="ac-display-container" id="ac-display">
+                <div class="ac-status-bar">
+                    <span id="ac-power-status">
+                        <i class="bi bi-power"></i> OFF
+                    </span>
+                    <span id="ac-mode-status">
+                        <i class="bi bi-snow2"></i> COOL
+                    </span>
+                </div>
+                <div class="ac-temperature">
+                    <span id="ac-temp-value">--</span>
+                    <span class="ac-unit">°C</span>
+                </div>
             </div>
 
-            <div class="ac-center-row">
-                <button onclick="interact('temp_down', 'Temp -')" 
-                        class="btn btn-square {% if 'temp_down' in button_map %}registered{% endif %}">
+            <div class="ac-controls-row">
+                <button onclick="changeTemp(-1, this)" class="btn ac-temp-btn">
                     <i class="bi bi-dash-lg"></i>
                 </button>
                 
-                <div class="temp-display">
-                    TEMP
-                </div>
+                <button onclick="togglePower(this)" class="btn btn-power" id="ac-power-btn">
+                    <i class="bi bi-power"></i>
+                </button>
                 
-                <button onclick="interact('temp_up', 'Temp +')" 
-                        class="btn btn-square {% if 'temp_up' in button_map %}registered{% endif %}">
+                <button onclick="changeTemp(1, this)" class="btn ac-temp-btn">
                     <i class="bi bi-plus-lg"></i>
-                </button>
-            </div>
-
-            <div class="ac-bottom-row">
-                <button onclick="interact('swing', 'Oscilar')" 
-                        class="btn btn-pill {% if 'swing' in button_map %}registered{% endif %}">
-                    <i class="bi bi-arrow-repeat"></i>
-                    <span>Swing</span>
-                </button>
-                
-                <button onclick="interact('timer', 'Timer')" 
-                        class="btn btn-pill {% if 'timer' in button_map %}registered{% endif %}">
-                    <i class="bi bi-clock"></i>
-                    <span>Timer</span>
                 </button>
             </div>
         </div>
@@ -74,24 +56,24 @@
         {% else %}
         <div class="default-layout">
             <div class="power-row">
-                <button onclick="interact('power', 'Power')" 
-                        class="btn btn-round btn-power-top {% if 'power' in button_map %}registered power{% endif %}">
+                <button onclick="interact('power', 'Power', this)" 
+                        class="btn btn-power-top {% if 'power' in button_map %}registered{% endif %}">
                     <i class="bi bi-power"></i>
                 </button>
             </div>
 
             <div class="top-row">
-                <button onclick="interact('input', 'Mudar Entrada')" 
+                <button onclick="interact('input', 'Mudar Entrada', this)" 
                         class="btn btn-round {% if 'input' in button_map %}registered{% endif %}">
                     <i class="bi bi-input-cursor"></i>
                 </button>
                 
-                <button onclick="interact('home', 'Home')" 
+                <button onclick="interact('home', 'Home', this)" 
                         class="btn btn-round {% if 'home' in button_map %}registered{% endif %}">
                     <i class="bi bi-house"></i>
                 </button>
                 
-                <button onclick="interact('back', 'Voltar')" 
+                <button onclick="interact('back', 'Voltar', this)" 
                         class="btn btn-round {% if 'back' in button_map %}registered{% endif %}">
                     <i class="bi bi-arrow-left"></i>
                 </button>
@@ -100,32 +82,32 @@
             <div class="dpad-section">
                 <div class="dpad-container">
                     <div class="dpad-row">
-                        <button onclick="interact('up', 'Cima')" 
-                                class="btn btn-square dpad-btn {% if 'up' in button_map %}registered{% endif %}">
+                        <button onclick="interact('up', 'Cima', this)" 
+                                class="btn dpad-btn {% if 'up' in button_map %}registered{% endif %}">
                             <i class="bi bi-chevron-up"></i>
                         </button>
                     </div>
                     
                     <div class="dpad-row">
-                        <button onclick="interact('left', 'Esquerda')" 
-                                class="btn btn-square dpad-btn {% if 'left' in button_map %}registered{% endif %}">
+                        <button onclick="interact('left', 'Esquerda', this)" 
+                                class="btn dpad-btn {% if 'left' in button_map %}registered{% endif %}">
                             <i class="bi bi-chevron-left"></i>
                         </button>
                         
-                        <button onclick="interact('ok', 'OK')" 
+                        <button onclick="interact('ok', 'OK', this)" 
                                 class="btn btn-ok {% if 'ok' in button_map %}registered{% endif %}">
                             <span>OK</span>
                         </button>
                         
-                        <button onclick="interact('right', 'Direita')" 
-                                class="btn btn-square dpad-btn {% if 'right' in button_map %}registered{% endif %}">
+                        <button onclick="interact('right', 'Direita', this)" 
+                                class="btn dpad-btn {% if 'right' in button_map %}registered{% endif %}">
                             <i class="bi bi-chevron-right"></i>
                         </button>
                     </div>
                     
                     <div class="dpad-row">
-                        <button onclick="interact('down', 'Baixo')" 
-                                class="btn btn-square dpad-btn {% if 'down' in button_map %}registered{% endif %}">
+                        <button onclick="interact('down', 'Baixo', this)" 
+                                class="btn dpad-btn {% if 'down' in button_map %}registered{% endif %}">
                             <i class="bi bi-chevron-down"></i>
                         </button>
                     </div>
@@ -134,14 +116,16 @@
 
             <div class="volume-channel-section">
                 <div class="control-column">
-                    <div class="control-label">Volume</div>
+                    <div class="control-label">
+                        <i class="bi bi-volume-up"></i> VOL
+                    </div>
                     <div class="volume-controls">
-                        <button onclick="interact('vol_up', 'Vol +')" 
+                        <button onclick="interact('vol_up', 'Volume +', this)" 
                                 class="btn btn-volume {% if 'vol_up' in button_map %}registered{% endif %}">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                         
-                        <button onclick="interact('vol_down', 'Vol -')" 
+                        <button onclick="interact('vol_down', 'Volume -', this)" 
                                 class="btn btn-volume {% if 'vol_down' in button_map %}registered{% endif %}">
                             <i class="bi bi-dash-lg"></i>
                         </button>
@@ -149,14 +133,16 @@
                 </div>
 
                 <div class="control-column">
-                    <div class="control-label">Canal</div>
+                    <div class="control-label">
+                        <i class="bi bi-tv"></i> CH
+                    </div>
                     <div class="channel-controls">
-                        <button onclick="interact('ch_up', 'Canal +')" 
+                        <button onclick="interact('ch_up', 'Canal +', this)" 
                                 class="btn btn-volume {% if 'ch_up' in button_map %}registered{% endif %}">
                             <i class="bi bi-chevron-up"></i>
                         </button>
                         
-                        <button onclick="interact('ch_down', 'Canal -')" 
+                        <button onclick="interact('ch_down', 'Canal -', this)" 
                                 class="btn btn-volume {% if 'ch_down' in button_map %}registered{% endif %}">
                             <i class="bi bi-chevron-down"></i>
                         </button>
@@ -165,13 +151,13 @@
             </div>
 
             <div class="bottom-row">
-                <button onclick="interact('menu', 'Menu')" 
+                <button onclick="interact('menu', 'Menu', this)" 
                         class="btn btn-pill {% if 'menu' in button_map %}registered{% endif %}">
                     <i class="bi bi-list"></i>
                     <span>Menu</span>
                 </button>
                 
-                <button onclick="interact('mute', 'Mudo')" 
+                <button onclick="interact('mute', 'Mudo', this)" 
                         class="btn btn-pill {% if 'mute' in button_map %}registered{% endif %}">
                     <i class="bi bi-volume-mute"></i>
                     <span>Mudo</span>
@@ -182,25 +168,186 @@
     </div>
 </div>
 
+<div id="custom-modal-overlay" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <div class="custom-modal-icon" id="custom-modal-icon">
+            <i class="bi bi-record-circle"></i>
+        </div>
+        <h3 id="custom-modal-title">Cadastrar Botão</h3>
+        <p id="custom-modal-message">Deseja cadastrar agora?</p>
+        <div class="custom-modal-actions">
+            <button class="btn-cancel" onclick="closeConfirmDialog()">Cancelar</button>
+            <button class="btn-confirm" id="custom-modal-confirm-btn">Cadastrar</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const registeredKeys = {{ button_map|safe }};
     let learningButton = null;
+    let confirmActionCallback = null;
 
-    function interact(keyName, label) {
-        const button = event.currentTarget;
+    function showConfirmDialog(title, message, callback) {
+        document.getElementById('custom-modal-icon').innerHTML = '<i class="bi bi-record-circle" style="color: #38bdf8;"></i>';
+        document.getElementById('custom-modal-title').innerText = title;
+        document.getElementById('custom-modal-message').innerHTML = message;
+        document.querySelector('.custom-modal-actions').style.display = 'flex';
+        document.getElementById('custom-modal-confirm-btn').style.display = 'block';
+        document.querySelector('.btn-cancel').innerText = 'Cancelar';
         
-        if (keyName in registeredKeys) {
-            sendSignal(registeredKeys[keyName], button);
+        confirmActionCallback = callback;
+        document.getElementById('custom-modal-overlay').classList.add('show');
+    }
+
+    function closeConfirmDialog() {
+        document.getElementById('custom-modal-overlay').classList.remove('show');
+        confirmActionCallback = null;
+    }
+
+    document.getElementById('custom-modal-confirm-btn').addEventListener('click', () => {
+        document.getElementById('custom-modal-icon').innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i>';
+        document.getElementById('custom-modal-title').innerText = "Cadastrando...";
+        document.getElementById('custom-modal-message').innerHTML = "Aponte o controle físico e pressione o botão.";
+        document.querySelector('.custom-modal-actions').style.display = 'none';
+        
+        if (confirmActionCallback) confirmActionCallback();
+    });
+
+    function setModalSuccess() {
+        document.getElementById('custom-modal-icon').innerHTML = '<i class="bi bi-check-circle-fill" style="color: #10b981; font-size: 54px;"></i>';
+        document.getElementById('custom-modal-title').innerText = "Sucesso!";
+        document.getElementById('custom-modal-message').innerHTML = "Botão cadastrado e pronto para uso.";
+        setTimeout(() => {
+            closeConfirmDialog();
+        }, 2000);
+    }
+
+    function setModalError(msg) {
+        document.getElementById('custom-modal-icon').innerHTML = '<i class="bi bi-exclamation-circle-fill" style="color: #ef4444; font-size: 54px;"></i>';
+        document.getElementById('custom-modal-title').innerText = "Falha no Cadastro";
+        document.getElementById('custom-modal-message').innerHTML = msg;
+        document.querySelector('.custom-modal-actions').style.display = 'flex';
+        document.getElementById('custom-modal-confirm-btn').style.display = 'none';
+        document.querySelector('.btn-cancel').innerText = 'Fechar';
+    }
+
+    let acIsOn = {{ remote.ac_state_on|yesno:"true,false"|default:"false" }};
+    let currentTemp = {{ remote.ac_current_temp|default:"20" }}; 
+    const MIN_TEMP = 16;
+    const MAX_TEMP = 30;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const tempValue = document.getElementById('ac-temp-value');
+        if(tempValue) {
+            updateAcDisplay();
+            updatePowerButtonStyle();
+        }
+    });
+
+    function syncAcState() {
+        fetch(`/remote/api/state/{{ remote.id }}/`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ is_on: acIsOn, temp: currentTemp })
+        }).catch(e => console.error("Erro ao sincronizar estado:", e));
+    }
+
+    function updateAcDisplay() {
+        const tempValue = document.getElementById('ac-temp-value');
+        const powerStatus = document.getElementById('ac-power-status');
+        const displayContainer = document.getElementById('ac-display');
+
+        if (acIsOn) {
+            tempValue.innerText = currentTemp;
+            powerStatus.innerHTML = '<i class="bi bi-power"></i> ON';
+            displayContainer.classList.add('ac-on');
+            displayContainer.classList.remove('ac-off');
         } else {
-            if (confirm(`Botão "${label}" não cadastrado. Deseja cadastrar agora?`)) {
-                startLearning(keyName, label, button);
+            tempValue.innerText = "--";
+            powerStatus.innerHTML = '<i class="bi bi-power"></i> OFF';
+            displayContainer.classList.add('ac-off');
+            displayContainer.classList.remove('ac-on');
+        }
+    }
+
+    function updatePowerButtonStyle() {
+        const powerBtn = document.getElementById('ac-power-btn');
+        if (powerBtn) {
+            if (acIsOn) {
+                powerBtn.classList.add('ac-power-on');
+                powerBtn.classList.remove('ac-power-off');
+            } else {
+                powerBtn.classList.add('ac-power-off');
+                powerBtn.classList.remove('ac-power-on');
             }
+        }
+    }
+
+    function togglePower(buttonElement) {
+        if (acIsOn) {
+            acIsOn = false;
+            updateAcDisplay();
+            updatePowerButtonStyle();
+            syncAcState();
+            executeAcCommand('power_off', 'Desligar Ar', buttonElement);
+        } else {
+            acIsOn = true;
+            currentTemp = 20;
+            updateAcDisplay();
+            updatePowerButtonStyle();
+            syncAcState();
+            
+            executeAcCommand('power_on', 'Ligar Ar', buttonElement);
+            setTimeout(() => executeAcCommand(`temp_20`, `Temperatura 20°C`, buttonElement), 800); 
+        }
+    }
+
+    function changeTemp(direction, buttonElement) {
+        if (!acIsOn) {
+            showStatus("Ligue o ar condicionado primeiro.", "info");
+            return;
+        }
+
+        let newTemp = currentTemp + direction;
+        
+        if (newTemp >= MIN_TEMP && newTemp <= MAX_TEMP) {
+            currentTemp = newTemp;
+            updateAcDisplay();
+            syncAcState();
+            
+            let keyName = `temp_${currentTemp}`;
+            let label = `Temperatura ${currentTemp}°C`;
+            executeAcCommand(keyName, label, buttonElement);
+        } else {
+            showStatus(`Temperatura entre ${MIN_TEMP}°C e ${MAX_TEMP}°C`, "info");
+        }
+    }
+
+    function executeAcCommand(keyName, label, buttonElement) {
+        if (keyName in registeredKeys) {
+            sendSignal(registeredKeys[keyName], buttonElement);
+        } else {
+            showConfirmDialog(
+                "Comando não configurado",
+                `Deseja cadastrar o botão <strong>"${label}"</strong> agora?`,
+                () => startLearning(keyName, label, buttonElement)
+            );
+        }
+    }
+    function interact(keyName, label, buttonElement) {
+        if (keyName in registeredKeys) {
+            sendSignal(registeredKeys[keyName], buttonElement);
+        } else {
+            showConfirmDialog(
+                "Botão não configurado",
+                `Deseja cadastrar o botão <strong>"${label}"</strong> agora?`,
+                () => startLearning(keyName, label, buttonElement)
+            );
         }
     }
 
     function sendSignal(btnId, button) {
         const wasRegistered = button.classList.contains('registered');
-        
         button.classList.add('registered');
         button.style.transform = 'scale(0.95)';
         
@@ -209,15 +356,10 @@
             .then(data => {
                 setTimeout(() => {
                     button.style.transform = '';
-                    
-                    if (!wasRegistered) {
-                        setTimeout(() => {
-                            button.classList.remove('registered');
-                        }, 300);
-                    }
+                    if (!wasRegistered) setTimeout(() => button.classList.remove('registered'), 300);
                     
                     if (data.status === 'success') {
-                        showStatus("Comando enviado com sucesso", "success");
+                        showStatus("Comando enviado", "success");
                     } else {
                         showStatus("Erro: " + data.msg, "error");
                     }
@@ -225,22 +367,16 @@
             })
             .catch(error => {
                 button.style.transform = '';
-                if (!wasRegistered) {
-                    button.classList.remove('registered');
-                }
-                showStatus("Erro de conexão com o servidor", "error");
+                if (!wasRegistered) button.classList.remove('registered');
+                showStatus("Erro de conexão", "error");
             });
     }
 
     function startLearning(keyName, label, button) {
-        if (learningButton) {
-            learningButton.classList.remove('learning');
-        }
+        if (learningButton) learningButton.classList.remove('learning');
         
         learningButton = button;
         button.classList.add('learning');
-        
-        showStatus("Aponte o controle físico e pressione o botão...", "learning");
         
         fetch(`/remote/api/learn/{{ remote.id }}/?key=${keyName}&label=${encodeURIComponent(label)}`)
             .then(r => r.json())
@@ -249,78 +385,77 @@
                     checkLearningStatus(keyName, button);
                 } else {
                     button.classList.remove('learning');
-                    showStatus("Erro: " + data.msg, "error");
+                    setModalError("Dispositivo offline ou ocupado.");
                 }
+            })
+            .catch(error => {
+                button.classList.remove('learning');
+                setModalError("Falha ao comunicar com o servidor.");
             });
     }
 
     function checkLearningStatus(keyName, button) {
         let attempts = 0;
-        const maxAttempts = 30;
+        const maxAttempts = 30; 
         
         const checkInterval = setInterval(() => {
             attempts++;
             
-            if (keyName in registeredKeys) {
-                clearInterval(checkInterval);
-                button.classList.remove('learning');
-                showStatus("Botão cadastrado com sucesso!", "success");
-                
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-                return;
-            }
-            
-            if (attempts >= maxAttempts) {
-                clearInterval(checkInterval);
-                button.classList.remove('learning');
-                showStatus("Tempo esgotado para cadastro", "error");
-            }
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const regex = new RegExp(`['"]${keyName}['"]\\s*:\\s*(\\d+)`);
+                    const match = html.match(regex);
+                    
+                    if (match) {
+                        clearInterval(checkInterval);
+                        
+                        const newButtonId = parseInt(match[1]);
+                        registeredKeys[keyName] = newButtonId;
+                        
+                        button.classList.remove('learning');
+                        button.classList.add('registered');
+                        
+                        setModalSuccess();
+                        return;
+                    }
+                    
+                    if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        button.classList.remove('learning');
+                        setModalError("Tempo esgotado. Tente novamente.");
+                    }
+                })
+                .catch(err => console.error("Erro no background check:", err));
         }, 2000);
     }
 
     function showStatus(text, type = "info") {
         const overlay = document.getElementById('status-overlay');
         const statusText = document.getElementById('status-text');
+        const icon = overlay.querySelector('i');
         
         overlay.classList.remove('success', 'error', 'learning', 'show');
-        
         overlay.classList.add(type, 'show');
-        overlay.innerHTML = `
-            <i class="bi ${getStatusIcon(type)}"></i>
-            <span id="status-text">${text}</span>
-        `;
+        
+        let iconClass = 'bi-info-circle';
+        if (type === 'success') iconClass = 'bi-check-circle-fill';
+        if (type === 'error') iconClass = 'bi-exclamation-circle-fill';
+        
+        icon.className = `bi ${iconClass}`;
+        statusText.innerText = text;
         
         setTimeout(() => {
             overlay.classList.remove('show');
-            setTimeout(() => {
-                overlay.classList.remove('success', 'error', 'learning');
-            }, 400);
+            setTimeout(() => overlay.classList.remove('success', 'error', 'learning'), 400);
         }, 2500);
     }
 
-    function getStatusIcon(type) {
-        switch(type) {
-            case 'success': return 'bi-check-circle';
-            case 'error': return 'bi-exclamation-circle';
-            case 'learning': return 'bi-record-circle';
-            default: return 'bi-info-circle';
-        }
-    }
-
     document.addEventListener('touchstart', function() {}, {passive: true});
-
     document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('touchstart', function(e) {
-            if (e.touches.length > 1) {
-                e.preventDefault();
-            }
+            if (e.touches.length > 1) e.preventDefault();
         }, {passive: false});
     });
-
-    if ('ontouchstart' in window) {
-        document.body.classList.add('touch-device');
-    }
 </script>
 {% endblock content %}
