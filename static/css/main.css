@@ -1,6 +1,6 @@
 /* ===== VARIÁVEIS GLOBAIS ===== */
 :root {
-    /* Cores Principais */
+/* Cores Principais */
     --primary: #6d28d9;
     --primary-light: #8b5cf6;
     --primary-dark: #5b21b6;
@@ -1108,4 +1108,128 @@ body {
     .btn-action-text {
         display: inline;
     }
+}
+/* ===== AJUSTES PARA TOUCH 7" E PADRONIZAÇÃO DE CORES ===== */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    padding: 10px;
+}
+
+.event-card {
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Feedback de Sucesso (Detonação) padronizado com --success */
+.event-card.status-success {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    border-color: var(--success) !important;
+}
+
+.event-card.status-success .event-name, 
+.event-card.status-success .event-detail {
+    color: var(--success) !important;
+}
+
+/* Overlay de Confirmação padronizado com --success */
+.success-overlay {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(16, 185, 129, 0.9);
+    display: none; /* Ativado via JS */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.event-card.status-success .success-overlay {
+    display: flex;
+    opacity: 1;
+}
+
+/* Botões de Ação para Touch padronizados */
+.event-card-footer {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr; 
+    gap: 8px;
+    padding: 12px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-action {
+    height: 60px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+/* Botão disparar usando o primary-light/primary */
+.btn-activate {
+    background: var(--gradient-primary);
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(109, 40, 217, 0.2);
+}
+
+.btn-activate:active {
+    transform: scale(0.95);
+    background: var(--primary-dark);
+}
+
+.btn-activate i { 
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+}
+
+/* Botão Editar usando cinza/dark padrão */
+.btn-edit { 
+    background-color: rgba(100, 116, 139, 0.1);
+    color: var(--dark) !important;
+}
+
+.btn-edit:active {
+    background-color: rgba(100, 116, 139, 0.2);
+}
+
+/* Botão Deletar usando danger padrão */
+.btn-delete { 
+    background-color: rgba(239, 68, 68, 0.1); 
+    color: var(--danger) !important; 
+}
+
+.btn-delete:active {
+    background-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Detalhes dos pinos no card */
+.event-detail i { 
+    margin-right: 8px; 
+    color: var(--primary); 
+}
+
+/* Esconder mensagens padrão */
+.messages-container {
+    display: none; 
 }

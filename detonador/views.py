@@ -87,4 +87,3 @@ def delete_event(request, evento_id):
     evento_to_delete.delete()
     messages.warning(request, f"Evento '{nome_evento}' foi removido.")
     return redirect('detonador_dashboard')
-
