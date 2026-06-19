@@ -17,16 +17,15 @@ def index(request):
             device_ids = request.POST.getlist('devices')
             nome_evento = request.POST.get('nome_evento')
             delay = request.POST.get('delay')
-            pinos_selecionados = request.POST.getlist('pinos')
+            pin_sequence = request.POST.get('pin_sequence')
 
-            if not all([device_ids, nome_evento, delay, pinos_selecionados]):
+            if not all([device_ids, nome_evento, delay, pin_sequence]):
                 messages.error(request, "Todos os campos são obrigatórios para criar um evento.")
             else:
-                sequencia_str = ",".join(pinos_selecionados)
                 novo_evento = DetonadorEvento.objects.create(
                     name=nome_evento,
                     delay_ms=int(delay),
-                    pin_sequence=sequencia_str
+                    pin_sequence=pin_sequence
                 )
                 novo_evento.devices.set(device_ids)
                 messages.success(request, f"Evento '{nome_evento}' criado com sucesso!")
@@ -36,15 +35,15 @@ def index(request):
             device_ids = request.POST.getlist('devices')
             nome_evento = request.POST.get('nome_evento')
             delay = request.POST.get('delay')
-            pinos_selecionados = request.POST.getlist('pinos')
+            pin_sequence = request.POST.get('pin_sequence')
 
-            if not all([evento_id, device_ids, nome_evento, delay, pinos_selecionados]):
+            if not all([evento_id, device_ids, nome_evento, delay, pin_sequence]):
                 messages.error(request, "Todos os campos são obrigatórios para editar o evento.")
             else:
                 evento = get_object_or_404(DetonadorEvento, id=evento_id)
                 evento.name = nome_evento
                 evento.delay_ms = int(delay)
-                evento.pin_sequence = ",".join(pinos_selecionados)
+                evento.pin_sequence = pin_sequence
                 evento.devices.set(device_ids) 
                 evento.save()
                 messages.success(request, f"Evento '{nome_evento}' atualizado com sucesso!")
@@ -70,15 +69,11 @@ def activate_event(request, evento_id):
                 'delay_ms': evento_to_activate.delay_ms,
                 'pin_sequence': evento_to_activate.pin_sequence,
             }
-
-            print(f"Enviando para o grupo {group_name}: {event_data}")
             await channel_layer.group_send(group_name, event_data)
 
     async_to_sync(send_event_to_devices)()
-    
     messages.success(request, f"Evento '{evento_to_activate.name}' detonado com sucesso!")
     return redirect('detonador_dashboard')
-
 
 @login_required(login_url='/login')
 def delete_event(request, evento_id):

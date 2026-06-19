@@ -125,16 +125,18 @@
                 <div class="form-group">
                     <label class="form-label">Ordem dos Pinos</label>
                     <div class="pins-container">
-                        <div class="pins-grid">
+                        <div class="pins-grid" id="createPinsGrid">
                             {% for i in "12345678" %}
                             <button type="button" class="pin-btn" data-pin="{{ i }}">D{{ i }}</button>
                             {% endfor %}
                         </div>
-                        <div class="pins-sequence" id="createPinsSequence"></div>
+                        <button type="button" class="btn btn-secondary" id="createAddStepBtn" style="margin-top: 10px; border-radius: 6px; width: 100%;">
+                            <i class="bi bi-plus-square"></i> Adicionar Etapa
+                        </button>
+                        <div class="pins-sequence" id="createPinsSequence" style="margin-top: 10px;"></div>
                     </div>
                 </div>
-                
-                <div id="createHiddenPinsInputs"></div>
+                <input type="hidden" name="pin_sequence" id="createPinSequenceInput">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="cancelCreateBtn">
@@ -190,16 +192,18 @@
                 <div class="form-group">
                     <label class="form-label">Ordem dos Pinos</label>
                     <div class="pins-container">
-                        <div class="pins-grid">
+                        <div class="pins-grid" id="editPinsGrid">
                             {% for i in "12345678" %}
                             <button type="button" class="pin-btn" data-pin="{{ i }}">D{{ i }}</button>
                             {% endfor %}
                         </div>
-                        <div class="pins-sequence" id="editPinsSequence"></div>
+                        <button type="button" class="btn btn-secondary" id="editAddStepBtn" style="margin-top: 10px; border-radius: 6px; width: 100%;">
+                            <i class="bi bi-plus-square"></i> Adicionar Etapa
+                        </button>
+                        <div class="pins-sequence" id="editPinsSequence" style="margin-top: 10px;"></div>
                     </div>
                 </div>
-                
-                <div id="editHiddenPinsInputs"></div>
+                <input type="hidden" name="pin_sequence" id="editPinSequenceInput">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="cancelEditBtn">
@@ -254,11 +258,9 @@
                         }, 3000);
 
                     } else {
-                        console.error("Erro no disparo:", response.status);
                         alert("Falha ao disparar o evento. Tente novamente.");
                     }
                 } catch (error) {
-                    console.error("Erro de conexão:", error);
                     alert("Erro de conexão com o servidor.");
                 } finally {
                     this.innerHTML = originalHtml;
@@ -268,7 +270,6 @@
             });
         });
 
-        // --- LÓGICA DOS MODAIS (CRIAR E EDITAR) ---
         const createEventBtn = document.getElementById('createEventBtn');
         const createEventModal = document.getElementById('createEventModal');
         const closeCreateModal = document.getElementById('closeCreateModal');
@@ -292,29 +293,6 @@
         closeCreateModal.addEventListener('click', closeCreateEventModal);
         cancelCreateBtn.addEventListener('click', closeCreateEventModal);
 
-        document.querySelectorAll('.edit-event-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const eventData = this.dataset;
-                document.getElementById('editEventId').value = eventData.eventoId;
-                document.getElementById('editEventName').value = eventData.eventoName;
-                document.getElementById('editEventDelay').value = eventData.eventoDelay;
-
-                const deviceIds = eventData.eventoDevices.split(',').filter(id => id);
-                document.querySelectorAll('#editDevicesGrid input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.checked = deviceIds.includes(checkbox.value);
-                });
-
-                const pins = eventData.eventoPins.split(',');
-                resetEditPins();
-                pins.forEach(pin => {
-                    if (pin) addPinToEditSequence(pin);
-                });
-                
-                editEventModal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
         function closeEditEventModal() {
             editEventModal.style.display = 'none';
             document.body.style.overflow = 'auto';
@@ -333,86 +311,128 @@
             }
         });
 
-        // --- LÓGICA DOS PINOS ---
-        function setupPinSelection(modalType) {
+        function setupPinGroupSelection(modalType) {
+            const pinsGrid = document.getElementById(modalType + 'PinsGrid');
             const pinsSequence = document.getElementById(modalType + 'PinsSequence');
-            const hiddenPinsInputs = document.getElementById(modalType + 'HiddenPinsInputs');
-            const pinButtons = document.querySelectorAll('#' + modalType + 'EventModal .pin-btn');
+            const pinSequenceInput = document.getElementById(modalType + 'PinSequenceInput');
+            const addStepBtn = document.getElementById(modalType + 'AddStepBtn');
+            const pinButtons = pinsGrid.querySelectorAll('.pin-btn');
             
+            let currentSelection = [];
+            let finalSequence = [];
+
             pinButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const pinValue = this.dataset.pin;
-                    
-                    const existingPins = Array.from(pinsSequence.querySelectorAll('.pin-chip'))
-                        .map(chip => chip.dataset.pin);
-                    
-                    if (!existingPins.includes(pinValue)) {
-                        addPinToSequence(pinValue, modalType);
+                    if (currentSelection.includes(pinValue)) {
+                        currentSelection = currentSelection.filter(p => p !== pinValue);
+                        this.style.backgroundColor = ''; 
+                        this.style.color = '';
+                    } else {
+                        currentSelection.push(pinValue);
+                        this.style.backgroundColor = '#0d6efd'; 
+                        this.style.color = 'white';
                     }
                 });
             });
-            
-            function addPinToSequence(pinValue, type) {
-                const pinChip = document.createElement('div');
-                pinChip.className = 'pin-chip';
-                pinChip.dataset.pin = pinValue;
-                pinChip.innerHTML = `
-                    D${pinValue}
-                    <button type="button" class="pin-remove">&times;</button>
-                `;
+
+            addStepBtn.addEventListener('click', function() {
+                if (currentSelection.length === 0) return;
                 
-                pinChip.querySelector('.pin-remove').addEventListener('click', function() {
-                    pinChip.remove();
-                    updateHiddenPinsInputs(type);
+                currentSelection.sort((a, b) => parseInt(a) - parseInt(b));
+                finalSequence.push([...currentSelection]);
+                
+                renderSequence();
+                
+                currentSelection = [];
+                pinButtons.forEach(btn => {
+                    btn.style.backgroundColor = '';
+                    btn.style.color = '';
+                });
+            });
+            
+            function renderSequence() {
+                pinsSequence.innerHTML = '';
+                finalSequence.forEach((step, index) => {
+                    const stepChip = document.createElement('div');
+                    stepChip.className = 'pin-chip';
+                    stepChip.innerHTML = `
+                        ${step.map(p => `D${p}`).join(' + ')}
+                        <button type="button" class="pin-remove" data-index="${index}">&times;</button>
+                    `;
+                    pinsSequence.appendChild(stepChip);
                 });
                 
-                pinsSequence.appendChild(pinChip);
-                updateHiddenPinsInputs(type);
-            }
-            
-            function updateHiddenPinsInputs(type) {
-                const pinsSequence = document.getElementById(type + 'PinsSequence');
-                const hiddenPinsInputs = document.getElementById(type + 'HiddenPinsInputs');
-                
-                hiddenPinsInputs.innerHTML = '';
-                
-                pinsSequence.querySelectorAll('.pin-chip').forEach(chip => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'pinos';
-                    input.value = chip.dataset.pin;
-                    hiddenPinsInputs.appendChild(input);
+                pinsSequence.querySelectorAll('.pin-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = this.dataset.index;
+                        finalSequence.splice(idx, 1);
+                        renderSequence();
+                    });
                 });
+                
+                updateHiddenInput();
             }
             
+            function updateHiddenInput() {
+                const strValue = finalSequence.map(step => step.join('+')).join(',');
+                pinSequenceInput.value = strValue;
+            }
+
             return {
-                addPinToSequence,
-                updateHiddenPinsInputs
+                loadExisting: function(pinStr) {
+                    finalSequence = [];
+                    currentSelection = [];
+                    pinButtons.forEach(btn => { btn.style.backgroundColor = ''; btn.style.color = ''; });
+                    
+                    if (pinStr) {
+                        const steps = pinStr.split(',');
+                        steps.forEach(step => {
+                            if (step) finalSequence.push(step.split('+'));
+                        });
+                    }
+                    renderSequence();
+                },
+                reset: function() {
+                    finalSequence = [];
+                    currentSelection = [];
+                    pinButtons.forEach(btn => { btn.style.backgroundColor = ''; btn.style.color = ''; });
+                    renderSequence();
+                }
             };
         }
         
-        const createPinManager = setupPinSelection('create');
-        const editPinManager = setupPinSelection('edit');
-        
-        function addPinToEditSequence(pinValue) {
-            editPinManager.addPinToSequence(pinValue, 'edit');
-        }
+        const createPinManager = setupPinGroupSelection('create');
+        const editPinManager = setupPinGroupSelection('edit');
         
         function resetCreateForm() {
             document.getElementById('createEventForm').reset();
-            document.getElementById('createPinsSequence').innerHTML = '';
-            document.getElementById('createHiddenPinsInputs').innerHTML = '';
+            createPinManager.reset();
         }
         
         function resetEditForm() {
             document.getElementById('editEventForm').reset();
-            resetEditPins();
+            editPinManager.reset();
         }
-        
-        function resetEditPins() {
-            document.getElementById('editPinsSequence').innerHTML = '';
-            document.getElementById('editHiddenPinsInputs').innerHTML = '';
-        }
+
+        document.querySelectorAll('.edit-event-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const eventData = this.dataset;
+                document.getElementById('editEventId').value = eventData.eventoId;
+                document.getElementById('editEventName').value = eventData.eventoName;
+                document.getElementById('editEventDelay').value = eventData.eventoDelay;
+
+                const deviceIds = eventData.eventoDevices.split(',').filter(id => id);
+                document.querySelectorAll('#editDevicesGrid input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = deviceIds.includes(checkbox.value);
+                });
+
+                editPinManager.loadExisting(eventData.eventoPins);
+                
+                editEventModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
     });
 </script>
 {% endblock %}
